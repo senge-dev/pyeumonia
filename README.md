@@ -4,7 +4,7 @@ A covid-19 api to get the latest data from [DXY](https://ncov.dxy.cn/ncovh5/view
 
 Chinese user can see [README-zh_CN.md](README-zh_CN.md).
 
-中国用户可以访问[README-zh_CN.md](README-zh_CN.md).
+鍥藉唴鐢ㄦ埛璇疯闂甗README-zh_CN.md](README-zh_CN.md).
 
 ## How to install
 
