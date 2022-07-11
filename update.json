@@ -1,0 +1,18 @@
+[
+  {
+    "language": "en_US",
+    "update": [
+      "Update pypi by parameter automatically",
+      "Get the covid-19 data from your address automatically",
+      "Get the covid-19 data for past several days"
+    ]
+  }, {
+    "language": "zh_CN",
+    "update": [
+      "你可以通过设置参数来自动更新pypi",
+      "你可以通过设置参数来从你的所在地自动获取疫情信息",
+      "你可以通过设置参数来获取过去几天的疫情信息",
+      "你可以获取国内某个城市的疫情信息，并且支持从你的所在地自动获取"
+    ]
+  }
+]
