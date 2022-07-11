@@ -26,7 +26,7 @@ class Covid19:
     Chinese data is also supported, if you want to show Chinese, please initialize the class `covid = Covid('zh_CN')`.
     """
 
-    def __init__(self, language='auto', check_upgradable=True, update_logs=False, auto_update=False):
+    def __init__(self, language='auto', check_upgradable=True, auto_update=False):
         # generate language from system language, only support Chinese and English.
         if language == 'auto':
             language = locale.getdefaultlocale()[0]
@@ -34,7 +34,6 @@ class Covid19:
             language = 'en_US'
         self.language = language
         if check_upgradable:
-            self.logs = update_logs
             self.auto_update = auto_update
             self.check_upgrade()
         url = 'https://ncov.dxy.cn/ncovh5/view/pneumonia'  # Get data from this url
@@ -158,26 +157,6 @@ class Covid19:
             else:
                 print(f'You are using the latest version {version}!')
             return
-        if self.logs:
-            branch = 'master'
-            log_url = 'https://cdn.jsdelivr.net/gh/senge-studio/pyeumonia@master/update.json'
-            logs = requests.get(url=log_url, timeout=2)
-            logs.encoding='utf-8'
-            logs_data = json.loads(logs.text)
-            if self.language == 'zh_CN':
-                logs = logs_data[0]['update']
-                print(f'更新日志：\n')
-                index = 1
-                for log in logs:
-                    print(f'{index}. {log}')
-                    index += 1
-            else:
-                logs = logs_data[1]['update']
-                print(f'Update log:\n')
-                index = 1
-                for log in logs:
-                    print(f'{index}. {log}')
-                    index += 1
         if self.auto_update:
             os.system('pip install --upgrade pyeumonia')
             if self.language == 'zh_CN':
