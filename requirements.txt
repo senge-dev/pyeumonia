@@ -1,6 +1,5 @@
 setuptools~=60.2.0
 requests~=2.28.1
 beautifulsoup4~=4.11.1
-py
-django-iso3166~=10.1.1
+iso3166==2.0.2
 pypinyin~=0.46.0
