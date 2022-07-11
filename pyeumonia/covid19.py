@@ -22,7 +22,6 @@ class Covid19:
     :param language: The language of the data, default is 'auto', check your language automatically.
     :param check_upgradable: While running the program it will check upgradable version, default is True.
     :param auto_update: If you want to update the program automatically, set it to True.
-    :param update_logs: If you want to see the update logs, set it to True.
     Chinese data is also supported, if you want to show Chinese, please initialize the class `covid = Covid('zh_CN')`.
     """
 
@@ -269,35 +268,37 @@ class Covid19:
         """
         # Get covid-19 data from a city
 
-        This function is only supported for Chinese language.
+        This function is only supported for Chinese language. :param province_name: The province you want to get the
+        data, default is '上海'. :param city_name: The city you want to get the data, default is '杨浦区'.
+        :param auto: If you want to get the data of the city automatically, please set the parameter to True.
+        :param show_danger_areas: If you want to get the danger areas count of the city,
+        please set the parameter to True.
         :param province_name: The province you want to get the data, default is '上海'.
         :param city_name: The city you want to get the data, default is '杨浦区'.
-        :param auto: If you want to get the data of the city automatically, please set the parameter to True.
-        :param show_danger_areas: If you want to get the danger areas count of the city, please set the parameter to True.
         :return: The data in json format.
         """
-        if auto == True:
+        if auto:
             place = self.get_region()
             if place['countryName'] != 'Failed':
                 province_name = place['provinceName']
                 city_name = place['cityName']
-        data = {}
         c_data = self.c_data
         for province in c_data:
             if province['provinceShortName'] == province_name:
                 for city in province['cities']:
                     if city['cityName'] == city_name:
-                        del city['suspectedCount']
-                        del city['locationId']
-                        del city['notShowCurrentConfirmedCount']
-                        del city['currentConfirmedCountStr']
-                        if not show_danger_areas:
-                            del city['highDangerCount']
-                            del city['midDangerCount']
-                        if city['highDangerCount'] == 0:
-                            del city['highDangerCount']
-                        if city['midDangerCount'] == 0:
-                            del city['midDangerCount']
+                        city_data = {
+                            'cityName': city['cityName'],
+                            'currentConfirmedCount': city['currentConfirmedCount'],
+                            'confirmedCount': city['confirmedCount'],
+                            'curedCount': city['curedCount'],
+                            'deadCount': city['deadCount'],
+                        }
+                        if show_danger_areas:
+                            if city['highDangerCount'] > 0:
+                                city_data['highDangerCount'] = city['highDangerCount']
+                            if city['midDangerCount'] > 0:
+                                city_data['midDangerCount'] = city['midDangerCount']
                         return city
 
     def danger_areas_data(self, include_cities=True, include_counts=True, include_danger_areas=True):
@@ -307,10 +308,10 @@ class Covid19:
         This function is only supported in Chinese.
         :param include_cities: Include the danger areas count for every city default.
         :param include_counts: Include the danger areas count default.
-        :param include_danger_areas: Include high and mid danger areas default.
+        :param include_danger_areas: Include high danger and middle danger areas default.
         """
         if not include_cities and not include_counts and not include_danger_areas:
-            raise CovidException('Paramenter include_cities, include_counts, include_danger_areas cannot be all False.')
+            raise CovidException('Parameter include_cities, include_counts, include_danger_areas cannot be all False.')
         data = []
         merged_data = {
             'midDangerAreas': [],
