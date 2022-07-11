@@ -22,10 +22,11 @@ class Covid19:
     :param language: The language of the data, default is 'auto', check your language automatically.
     :param check_upgradable: While running the program it will check upgradable version, default is True.
     :param auto_update: If you want to update the program automatically, set it to True.
+    :param update_logs: If you want to see the update logs, set it to True.
     Chinese data is also supported, if you want to show Chinese, please initialize the class `covid = Covid('zh_CN')`.
     """
 
-    def __init__(self, language='auto', check_upgradable=True, auto_update=False):
+    def __init__(self, language='auto', check_upgradable=True, update_logs=False, auto_update=False):
         # generate language from system language, only support Chinese and English.
         if language == 'auto':
             language = locale.getdefaultlocale()[0]
@@ -33,16 +34,9 @@ class Covid19:
             language = 'en_US'
         self.language = language
         if check_upgradable:
-            upgradable = self.check_upgrade()
-            # If this program is upgradable, it will check if the user want to update automatically.
-            if upgradable == 'Failed':
-                pass
-            elif upgradable and auto_update:
-                os.system('pip install --upgrade pyeumonia')
-                if self.language == 'zh_CN':
-                    raise CovidException('pypi包已更新完成，请重新运行此程序。')
-                else:
-                    raise CovidException('pypi package has been updated, please restart this program.')
+            self.logs = update_logs
+            self.auto_update = auto_update
+            self.check_upgrade()
         url = 'https://ncov.dxy.cn/ncovh5/view/pneumonia'  # Get data from this url
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -149,7 +143,7 @@ class Covid19:
                 print('检查更新失败，请前往 https://pypi.org/project/pyeumonia 查看更新。')
             else:
                 print('Check update failed, please visit https://pypi.org/project/pyeumonia to check update.')
-            return 'Failed'
+            return
         latest_version = response['info']['version']
         if latest_version != version:
             if self.language == 'zh_CN':
@@ -158,13 +152,38 @@ class Covid19:
             else:
                 print('New version is available, please update!')
                 print(f'Your version is {version}, the latest version is {latest_version}')
-            return True
         else:
             if self.language == 'zh_CN':
                 print(f'您当前安装的版本{version}为最新版！')
             else:
                 print(f'You are using the latest version {version}!')
-            return False
+            return
+        if self.logs:
+            branch = 'master'
+            log_url = 'https://cdn.jsdelivr.net/gh/senge-studio/pyeumonia@master/update.json'
+            logs = requests.get(url=log_url, timeout=2)
+            logs.encoding='utf-8'
+            logs_data = json.loads(logs.text)
+            if self.language == 'zh_CN':
+                logs = logs_data[0]['update']
+                print(f'更新日志：\n')
+                index = 1
+                for log in logs:
+                    print(f'{index}. {log}')
+                    index += 1
+            else:
+                logs = logs_data[1]['update']
+                print(f'Update log:\n')
+                index = 1
+                for log in logs:
+                    print(f'{index}. {log}')
+                    index += 1
+        if self.auto_update:
+            os.system('pip install --upgrade pyeumonia')
+            if self.language == 'zh_CN':
+                raise CovidException('pypi包已更新完成，请重新运行此程序。')
+            else:
+                raise CovidException('pypi package has been updated, please restart this program.')
 
     def cn_covid_data(self):
         """
