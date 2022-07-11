@@ -4,7 +4,7 @@ A covid-19 api to get the latest data from [DXY](https://ncov.dxy.cn/ncovh5/view
 
 Chinese user can see [README-zh_CN.md](README-zh_CN.md).
 
-中国用户可以访问[README-zh_CN.md](README-zh_CN.md).
+鍥藉唴鐢ㄦ埛璇疯闂甗README-zh_CN.md](README-zh_CN.md).
 
 ## How to install
 
@@ -16,18 +16,20 @@ pip install pyeumonia
 
 ## Configurations
 
-If you have already installed pyeumonia and it's newer than `0.1.0a0`, it will automatically check for updates, you can also configure it by following the steps below to let it automatically update.
+If you have already installed pyeumonia, and it's newer than `0.1.0a0`, it will automatically check for updates, you can also configure it by following the steps below to let it automatically update.
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(check_upgradable=True, auto_update=True)
+from pyeumonia.covid19 import Covid19
+
+covid = Covid19(check_upgradable=True, auto_update=True)
 ```
 
 If you don't want to check updates automatically, you can configure like this.
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(check_upgradable=False)
+from pyeumonia.covid19 import Covid19
+
+covid = Covid19(check_upgradable=False)
 ```
 
 If you want to upgrade it manually, you can use `pip install --upgrade pyeumonia`.
@@ -37,16 +39,18 @@ If you want to upgrade it manually, you can use `pip install --upgrade pyeumonia
 ### Get the latest data from the world:
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(language='en_US')
+from pyeumonia.covid19 import Covid19
+
+covid = Covid19(language='en_US')
 data = covid.world_covid_data()
 ```
 
 ### Get timeline data from a country:
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(language='en_US')
+from pyeumonia.covid19 import Covid19
+
+covid = Covid19(language='en_US')
 # Get covid-19 data from Japan in the last 30 days
 data = covid.country_covid_data(country_name='Japan', show_timeline=30)
 ```

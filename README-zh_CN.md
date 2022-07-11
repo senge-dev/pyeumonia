@@ -1,83 +1,83 @@
 # Pyeumonia
 
-ĞÂ¹Ú·ÎÑ×ÒßÇéAPI£¬¿ÉÒÔ´Ó[¶¡ÏãÔ°¹ÙÍø](https://ncov.dxy.cn/ncovh5/view/pneumonia)»ñÈ¡×îĞÂÊı¾İ¡£
+æ–°å† è‚ºç‚ç–«æƒ…APIï¼Œå¯ä»¥ä»[ä¸é¦™å›­å®˜ç½‘](https://ncov.dxy.cn/ncovh5/view/pneumonia)è·å–æœ€æ–°æ•°æ®ã€‚
 
-## °²×°pypi
+## å®‰è£…pypi
 
-°²×°pypi°ü:
+å®‰è£…pypiåŒ…:
 
 ```bash
 pip install pyeumonia
 ```
 
-## ×Ô¶¯ÅäÖÃ
+## è‡ªåŠ¨é…ç½®
 
-Èç¹ûÄãÒÑ¾­°²×°ÁËpyeumonia£¬²¢ÇÒËüµÄ°æ±¾±È`0.1.0a0`ĞÂ£¬Ëü½«×Ô¶¯¼ì²é¸üĞÂ£¬ÄãÒ²¿ÉÒÔ°´ÕÕÒÔÏÂ²½ÖèÅäÖÃ²ÎÊıÀ´ÊµÏÖ×Ô¶¯¸üĞÂ¡£
+å¦‚æœä½ å·²ç»å®‰è£…äº†pyeumoniaï¼Œå¹¶ä¸”å®ƒçš„ç‰ˆæœ¬æ¯”`0.1.0a0`æ–°ï¼Œå®ƒå°†è‡ªåŠ¨æ£€æŸ¥æ›´æ–°ï¼Œä½ ä¹Ÿå¯ä»¥æŒ‰ç…§ä»¥ä¸‹æ­¥éª¤é…ç½®å‚æ•°æ¥å®ç°è‡ªåŠ¨æ›´æ–°ã€‚
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(check_upgradable=True, auto_update=True)
+from pyeumonia.covid19 import Covid19
+covid = Covid19(check_upgradable=True, auto_update=True)
 ```
 
-Èç¹ûÄã²»Ïë×Ô¶¯¼ì²é¸üĞÂ£¬¿ÉÒÔÕâÑùÅäÖÃ:
+å¦‚æœä½ ä¸æƒ³è‡ªåŠ¨æ£€æŸ¥æ›´æ–°ï¼Œå¯ä»¥è¿™æ ·é…ç½®:
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(check_upgradable=False)
+from pyeumonia.covid19 import Covid19
+covid = Covid19(check_upgradable=False)
 ```
 
-Èç¹ûÄãÏëÊÖ¶¯Éı¼¶Ëü£¬¿ÉÒÔÊ¹ÓÃ`pip install --upgrade pyeumonia`¡£
+å¦‚æœä½ æƒ³æ‰‹åŠ¨å‡çº§å®ƒï¼Œå¯ä»¥ä½¿ç”¨`pip install --upgrade pyeumonia`ã€‚
 
-## ÈçºÎÊ¹ÓÃ
+## å¦‚ä½•ä½¿ç”¨
 
-### ´ÓÈ«Çò»ñµÃ×îĞÂÊı¾İ
+### ä»å…¨çƒè·å¾—æœ€æ–°æ•°æ®
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(language='zh_CN')
+from pyeumonia.covid19 import Covid19
+covid = Covid19(language='zh_CN')
 data = covid.world_covid_data()
 ```
 
-### »ñÈ¡Ä³¸ö¹ú¼ÒµÄÒßÇéĞÅÏ¢¡£
+### è·å–æŸä¸ªå›½å®¶çš„ç–«æƒ…ä¿¡æ¯ã€‚
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(language='zh_CN')
-# »ñÈ¡ÈÕ±¾½ü30ÌìµÄÒßÇéĞÅÏ¢
+from pyeumonia.covid19 import Covid19
+covid = Covid19(language='zh_CN')
+# è·å–æ—¥æœ¬è¿‘30å¤©çš„ç–«æƒ…ä¿¡æ¯
 data = covid.country_covid_data(country_name='Japan', show_timeline=30)
 ```
 
-### »ñÈ¡¹úÄÚµÄÒßÇéĞÅÏ¢
+### è·å–å›½å†…çš„ç–«æƒ…ä¿¡æ¯
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(language='zh_CN')
-# »ñÈ¡¹úÄÚµÄÒßÇéĞÅÏ¢
+from pyeumonia.covid19 import Covid19
+covid = Covid19(language='zh_CN')
+# è·å–å›½å†…çš„ç–«æƒ…ä¿¡æ¯
 data = covid.cn_covid_data()
 ```
 
-### »ñÈ¡¹úÄÚÄ³¸öÊ¡/×ÔÖÎÇø/Ö±Ï½ÊĞ/ÌØ±ğĞĞÕşÇøµÄÒßÇéĞÅÏ¢
+### è·å–å›½å†…æŸä¸ªçœ/è‡ªæ²»åŒº/ç›´è¾–å¸‚/ç‰¹åˆ«è¡Œæ”¿åŒºçš„ç–«æƒ…ä¿¡æ¯
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(language='zh_CN')
-# »ñÈ¡Õã½­Ê¡½ü30ÌìµÄÒßÇéĞÅÏ¢£¬²¢»ñÈ¡µ±Ç°¸÷¸ö³ÇÊĞµÄÒßÇéĞÅÏ¢
-data = covid.province_covid_data(province_name='Õã½­', show_timeline=30, include_cities=True)
+from pyeumonia.covid19 import Covid19
+covid = Covid19(language='zh_CN')
+# è·å–æµ™æ±Ÿçœè¿‘30å¤©çš„ç–«æƒ…ä¿¡æ¯ï¼Œå¹¶è·å–å½“å‰å„ä¸ªåŸå¸‚çš„ç–«æƒ…ä¿¡æ¯
+data = covid.province_covid_data(province_name='æµ™æ±Ÿ', show_timeline=30, include_cities=True)
 ```
 
-### »ñÈ¡¹úÄÚµÄÖĞ¸ß·çÏÕµØÇø
+### è·å–å›½å†…çš„ä¸­é«˜é£é™©åœ°åŒº
 
 ```python
-from pyeumonia.pyeumonia import Covid
-covid = Covid(language='zh_CN')
-# »ñÈ¡¹úÄÚµÄÖĞ¸ß·çÏÕµØÇø(²»ÏÔÊ¾¹úÄÚµÄ·çÏÕµØÇøÊıÁ¿)
+from pyeumonia.covid19 import Covid19
+covid = Covid19(language='zh_CN')
+# è·å–å›½å†…çš„ä¸­é«˜é£é™©åœ°åŒº(ä¸æ˜¾ç¤ºå›½å†…çš„é£é™©åœ°åŒºæ•°é‡)
 data = covid.danger_areas_data(include_cities=False, include_counts=False, include_danger_areas=True)
 ```
 
-## ¿ª·ÅÔ´´úÂëĞí¿É
+## å¼€æ”¾æºä»£ç è®¸å¯
 
-±¾³ÌĞòÊ¹ÓÃ[GNU GPL v3](https://jxself.org/translations/gpl-3.zh.shtml)¿ªÔ´£¬Çë×ñÊØÒÔÏÂÌõ¿î£º
+æœ¬ç¨‹åºä½¿ç”¨[GNU GPL v3](https://jxself.org/translations/gpl-3.zh.shtml)å¼€æºï¼Œè¯·éµå®ˆä»¥ä¸‹æ¡æ¬¾ï¼š
 
-- Äã¿ÉÒÔÃâ·Ñ¸ø×Ô¼ºµÄpython³ÌĞòÊ¹ÓÃ±¾³ÌĞòµÄÔ´´úÂë¡£
-- Äã¿ÉÒÔ¶Ô±¾³ÌĞò½øĞĞĞŞ¸ÄºÍ·Ö·¢£¬µ«±ØĞë±£ÁôÉÏÊöµÄĞí¿ÉËµÃ÷ºÍÔ­×÷ÕßĞÅÏ¢
-- ÎŞÂÛ³öÓÚÈÎºÎÄ¿µÄ£¬±¾³ÌĞò½ûÖ¹ÓÃÓÚÉÌÒµÓÃÍ¾£¬°üÀ¨µ«²»ÏŞÓÚÆóÒµÍøÕ¾¡¢ÉÌÒµÓ¦ÓÃ¡¢ÉÌÒµÍÆ¹ãµÈ¡£
+- ä½ å¯ä»¥å…è´¹ç»™è‡ªå·±çš„pythonç¨‹åºä½¿ç”¨æœ¬ç¨‹åºçš„æºä»£ç ã€‚
+- ä½ å¯ä»¥å¯¹æœ¬ç¨‹åºè¿›è¡Œä¿®æ”¹å’Œåˆ†å‘ï¼Œä½†å¿…é¡»ä¿ç•™ä¸Šè¿°çš„è®¸å¯è¯´æ˜å’ŒåŸä½œè€…ä¿¡æ¯
+- æ— è®ºå‡ºäºä»»ä½•ç›®çš„ï¼Œæœ¬ç¨‹åºç¦æ­¢ç”¨äºå•†ä¸šç”¨é€”ï¼ŒåŒ…æ‹¬ä½†ä¸é™äºä¼ä¸šç½‘ç«™ã€å•†ä¸šåº”ç”¨ã€å•†ä¸šæ¨å¹¿ç­‰ã€‚

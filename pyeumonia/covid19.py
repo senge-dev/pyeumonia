@@ -16,7 +16,7 @@ class CovidException(Exception):
         self.args = args
 
 
-class Covid:
+class Covid19:
     """
     # Initialize the class
     :param language: The language of the data, default is 'auto', check your language automatically.
@@ -401,8 +401,8 @@ class Covid:
 
 
 if __name__ == '__main__':
-    covid = Covid()
-    covid_ = Covid(language='zh_CN')
+    covid = Covid19()
+    covid_ = Covid19(language='zh_CN')
     # Check the internet connection while pyeumonia has been imported.
     try:
         requests.get('https://ncov.dxy.cn/ncovh5/view/pneumonia')
