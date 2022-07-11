@@ -1,5 +1,7 @@
 # Pyeumonia
 
+This program is in private beta, but it's open source, if there is some error(s) in your code, please submit an issue to [Github](https://github.com/senge-studio/pyeumonia/issues).
+
 A covid-19 api to get the latest data from [DXY](https://ncov.dxy.cn/ncovh5/view/pneumonia).
 
 Chinese user can see [README-zh_CN.md](README-zh_CN.md).
@@ -53,6 +55,15 @@ from pyeumonia.covid19 import Covid19
 covid = Covid19(language='en_US')
 # Get covid-19 data from Japan in the last 30 days
 data = covid.country_covid_data(country_name='Japan', show_timeline=30)
+```
+
+### Get timeline data from your country:
+```python
+from pyeumonia.covid19 import Covid19
+
+covid = Covid19(language='en_US')
+# Get covid-19 data from your country in the last 30 days
+data = covid.country_covid_data(auto=True, show_timeline=30)
 ```
 
 ## Open Source license

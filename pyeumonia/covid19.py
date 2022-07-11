@@ -1,5 +1,3 @@
-import sys
-
 import requests  # Import requests module, which is used to send HTTP requests
 import json  # Import json module, which is used to parse JSON data
 from bs4 import BeautifulSoup  # Import beautifulsoup4 module, which is used to parse HTML data
@@ -7,6 +5,8 @@ import platform  # Import platform module, which is used to get OS type
 import locale  # Import locale module, which is used to get system language
 import time  # Import time module, which is used to get current time.
 import os  # Import os module, which is used to check pypi upgradable
+from pypinyin import lazy_pinyin  # Import pypinyin module, get your place name in Chinese
+from iso3166 import countries  # Import iso3166 module, get your place name in English
 
 
 class CovidException(Exception):
@@ -35,7 +35,9 @@ class Covid19:
         if check_upgradable:
             upgradable = self.check_upgrade()
             # If this program is upgradable, it will check if the user want to update automatically.
-            if upgradable and auto_update:
+            if upgradable == 'Failed':
+                pass
+            elif upgradable and auto_update:
                 os.system('pip install --upgrade pyeumonia')
                 if self.language == 'zh_CN':
                     raise CovidException('pypi包已更新完成，请重新运行此程序。')
@@ -82,15 +84,72 @@ class Covid19:
                                  .strip('}catch(e){}</script>')
                                  )
 
+    def get_region(self):
+        """
+        # Get the region of the covid-19 data, in order to get the covid-19 data of the region.
+
+        :return: Your region.
+        """
+        url = 'https://ipinfo.io/json'
+        place = {
+            'countryName': '',
+            'provinceName': '',
+            'cityName': '',
+        }
+        try:
+            response = requests.get(url=url, timeout=2).json()
+            # print(response)
+        except Exception:
+            if self.language == 'zh_CN':
+                print('获取地区失败，请检查网络连接。')
+            else:
+                print('Get region failed, please check your network connection.')
+            return {
+                'countryName': 'Failed',
+                'provinceName': 'Failed',
+                'cityName': 'Failed'
+            }
+        for country in self.w_data:
+            if countries.get(response['country']).alpha3 == country['countryShortCode']:
+                if self.language == 'zh_CN':
+                    place['countryName'] = country['provinceName']
+                    if place['countryName'] == '中国':
+                        for province in self.c_data:
+                            # Convert province name to Pinyin.
+                            province_name = province['provinceShortName']
+                            province_name_pinyin = ''.join(lazy_pinyin(province_name))
+                            if province_name_pinyin == response['region'].lower():
+                                place['provinceName'] = province_name
+                                for city in province['cities']:
+                                    city_name = city['cityName']
+                                    city_name_pinyin = ''.join(lazy_pinyin(city_name))
+                                    if city_name_pinyin == response['city'].lower():
+                                        place['cityName'] = city_name
+                                        break
+                                break
+                else:
+                    place['countryName'] = country['countryFullName']
+                    place['provinceName'] = response['region']
+                    place['cityName'] = response['city']
+                    break
+        return place
+
     def check_upgrade(self):
         """Check if there is a new version of the program.
-        :return: If there is a new version, return True, otherwise return False.
+        :return: If there is a new version, return True, otherwise return False, if check failed, return 'Failed'.
         """
         # Get the version of the program.
         version = os.popen('pip show pyeumonia').read().split('\n')[1].split(' ')[1]
         # Get the latest version of the program.
         url = 'https://pypi.org/pypi/pyeumonia/json'
-        response = requests.get(url).json()
+        try:
+            response = requests.get(url=url, timeout=2).json()
+        except Exception:
+            if self.language == 'zh_CN':
+                print('检查更新失败，请前往 https://pypi.org/project/pyeumonia 查看更新。')
+            else:
+                print('Check update failed, please visit https://pypi.org/project/pyeumonia to check update.')
+            return 'Failed'
         latest_version = response['info']['version']
         if latest_version != version:
             if self.language == 'zh_CN':
@@ -114,8 +173,9 @@ class Covid19:
         This function is only supported in Chinese.
         :return: The data in json format.
         """
+        c_data = self.c_data
         data = []
-        for province in self.c_data:
+        for province in c_data:
             del province['provinceName']
             del province['comment']
             del province['locationId']
@@ -130,7 +190,7 @@ class Covid19:
             data.append(province)
         return data
 
-    def province_covid_data(self, province_name='北京', show_timeline: int = 0, include_cities=False):
+    def province_covid_data(self, province_name='北京', show_timeline: int = 0, include_cities=False, auto=False):
         """
         # Get the covid-19 data from China, for every province.
 
@@ -138,11 +198,17 @@ class Covid19:
         :param province_name: The province you want to get the data, default is '北京'.
         :param show_timeline: If you want to get covid-19 data before ** days, please set the parameter to ** days.
         :param include_cities: If you want to get the data of cities, please set the parameter to True.
+        :param auto: If you want to get the data of province automatically, please set the parameter to True.
         :return: The data in json format.
         """
+        if auto:
+            place = self.get_region()
+            if place['provinceName'] != 'Failed':
+                province_name = place['provinceName']
         cities = []
         data = {}
-        for province in self.c_data:
+        c_data = self.c_data
+        for province in c_data:
             if province['provinceName'] == province_name or province['provinceShortName'] == province_name:
                 del province['comment']
                 del province['locationId']
@@ -201,6 +267,41 @@ class Covid19:
                 data['cities'] = cities
             return data
 
+    def city_covid_data(self, province_name='上海', city_name='杨浦区', auto=False, show_danger_areas=False):
+        """
+        # Get covid-19 data from a city
+
+        This function is only supported for Chinese language.
+        :param province_name: The province you want to get the data, default is '上海'.
+        :param city_name: The city you want to get the data, default is '杨浦区'.
+        :param auto: If you want to get the data of the city automatically, please set the parameter to True.
+        :param show_danger_areas: If you want to get the danger areas count of the city, please set the parameter to True.
+        :return: The data in json format.
+        """
+        if auto == True:
+            place = self.get_region()
+            if place['countryName'] != 'Failed':
+                province_name = place['provinceName']
+                city_name = place['cityName']
+        data = {}
+        c_data = self.c_data
+        for province in c_data:
+            if province['provinceShortName'] == province_name:
+                for city in province['cities']:
+                    if city['cityName'] == city_name:
+                        del city['suspectedCount']
+                        del city['locationId']
+                        del city['notShowCurrentConfirmedCount']
+                        del city['currentConfirmedCountStr']
+                        if not show_danger_areas:
+                            del city['highDangerCount']
+                            del city['midDangerCount']
+                        if city['highDangerCount'] == 0:
+                            del city['highDangerCount']
+                        if city['midDangerCount'] == 0:
+                            del city['midDangerCount']
+                        return city
+
     def danger_areas_data(self, include_cities=True, include_counts=True, include_danger_areas=True):
         """
         # Get the danger areas data from China.
@@ -217,7 +318,8 @@ class Covid19:
             'midDangerAreas': [],
             'highDangerAreas': [],
         }
-        for province in self.c_data:
+        c_data = self.c_data
+        for province in c_data:
             '''If the province have no any danger areas, the province will not be included in the data.'''
             if province['highDangerCount'] > 0 or province['midDangerCount'] > 0:
                 p_data = {
@@ -309,7 +411,8 @@ class Covid19:
         :return: The data in json format.
         """
         data = []
-        for country in self.w_data:
+        w_data = self.w_data
+        for country in w_data:
             country_data = {
                 'currentConfirmedCount': country['currentConfirmedCount'],
                 'confirmedCount': country['confirmedCount'],
@@ -335,18 +438,24 @@ class Covid19:
             data.append(country_data)
         return data
 
-    def country_covid_data(self, country_name='United States of America', show_timeline: int = 0):
+    def country_covid_data(self, country_name='United States of America', show_timeline: int = 0, auto=False):
         """
         # Get the covid-19 data from the world, for every country.
 
         This function is both supported in Chinese and English.
         :param country_name: The covid-19 data of this country will be returned, default is 'United States of America'.
         :param show_timeline: If you want to get the data for ** days, set this parameter to **.
-        :return:
+        :param auto: If you want to get covid-19 data from your country, set this parameter to True.
+        :return: The data in json format.
         """
+        if auto:
+            place = self.get_region()
+            if place['countryName'] != 'Failed':
+                country_name = place['countryName']
         url = ''
         country_raw_data = {}
-        for country in self.w_data:
+        w_data = self.w_data
+        for country in w_data:
             if show_timeline:
                 url = str(country['statisticsData'])
             if self.language == 'zh_CN':
@@ -390,7 +499,6 @@ class Covid19:
                     'currentConfirmedCount': timeline['currentConfirmedCount'],
                 }
                 t_data.append(t_temp_data)
-            country_name = country_raw_data['countryName']
             del country_raw_data['countryName']
             country_raw_data['dateId'] = now
             t_data.append(country_raw_data)
@@ -399,10 +507,31 @@ class Covid19:
         else:
             return country_raw_data
 
+    def cn_news_data(self):
+        """
+        Get the news from CCTV
+        :return: The latest news
+        """
+        n_data = self.n_data
+        raw_news = n_data
+        for news in raw_news:
+            del news['id']
+            pub_timestamp = news['pubDate'] / 1000
+            pub_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(pub_timestamp))
+            news['pubTime'] = pub_time
+            del news['pubDateStr']
+            del news['pubDate']
+            del news['provinceId']
+            del news['articleId']
+            del news['category']
+            del news['jumpUrl']
+        print(raw_news)
+
 
 if __name__ == '__main__':
-    covid = Covid19()
-    covid_ = Covid19(language='zh_CN')
+    covid = Covid19(language='zh_CN', check_upgradable=False)
+    region = covid.city_covid_data(auto=True, show_danger_areas=True)
+    print(region)
     # Check the internet connection while pyeumonia has been imported.
     try:
         requests.get('https://ncov.dxy.cn/ncovh5/view/pneumonia')
