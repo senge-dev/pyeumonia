@@ -66,6 +66,9 @@ covid = Covid19(language='en_US')
 data = covid.country_covid_data(auto=True, show_timeline=30)
 ```
 
+> **Warning**:
+>- If you are using a proxy, you need to turn off the proxy in your device, or the result will be wrong.
+
 ## Open Source license
 
 The project is open source and licensed under the [GNU GPL v3 license](https://www.gnu.org/licenses/gpl-3.0.txt). If you want to use it, please obey these license:

@@ -49,6 +49,14 @@ covid = Covid19(language='zh_CN')
 data = covid.country_covid_data(country_name='Japan', show_timeline=30)
 ```
 
+### 如果你的所在地不在中国，你可以用这个方法获取你所在国家的疫情信息。
+```python
+from pyeumonia.covid19 import Covid19
+covid = Covid19(language='zh_CN')
+# 获取你所在国家近30天的疫情信息
+data = covid.country_covid_data(auto=True, show_timeline=30)
+```
+
 ### 获取国内的疫情信息
 
 ```python
