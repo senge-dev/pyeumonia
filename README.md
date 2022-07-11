@@ -4,9 +4,9 @@ This program is in private beta, but it's open source, if there is some error(s)
 
 A covid-19 api to get the latest data from [DXY](https://ncov.dxy.cn/ncovh5/view/pneumonia).
 
-Chinese user can see [README-zh_CN.md](README-zh_CN.md).
+Chinese user can see [README-zh_CN.md](https://github.com/senge-studio/pyeumonia/blob/master/README-zh_CN.md).
 
-国内用户请访问[README-zh_CN.md](README-zh_CN.md).
+国内用户请访问[README-zh_CN.md](https://github.com/senge-studio/pyeumonia/blob/master/README-zh_CN.md).
 
 ## How to install
 
